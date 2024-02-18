@@ -68,4 +68,22 @@ class ChapterController extends Controller
             "data" => $chapter->get()
         ]);
     }
+
+    public function getById(int $id)
+    {
+        return new ChapterResource(self::findChapter($id));
+    }
+
+    public function remove(int $id)
+    {
+        self::findChapter($id)->delete();
+
+        return response()->json([
+            "code" => 200,
+            "status" => "OK",
+            "data" => [
+                "message" => "Chapter has been deleted"
+            ]
+        ]);
+    }
 }
