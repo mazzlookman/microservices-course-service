@@ -37,3 +37,6 @@ Route::get("/chapters", [\App\Http\Controllers\ChapterController::class, "getAll
 Route::get("/chapters/{id}", [\App\Http\Controllers\ChapterController::class, "getById"]);
 Route::patch("/chapters/{id}", [\App\Http\Controllers\ChapterController::class, "update"]);
 Route::delete("/chapters/{id}", [\App\Http\Controllers\ChapterController::class, "remove"]);
+
+// Lesson endpoints
+Route::post("/lessons", [\App\Http\Controllers\LessonController::class, "create"]);
