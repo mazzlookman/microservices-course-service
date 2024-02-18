@@ -18,8 +18,13 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
+// Mentor endpoints
 Route::post("/mentors", [\App\Http\Controllers\MentorController::class, "create"]);
 Route::get("/mentors", [\App\Http\Controllers\MentorController::class, "getAll"]);
 Route::patch("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "update"]);
 Route::get("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "getById"]);
 Route::delete("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "remove"]);
+
+// Course endpoints
+Route::post("/courses", [\App\Http\Controllers\CourseController::class, "create"]);
+Route::patch("/courses/{id}", [\App\Http\Controllers\CourseController::class, "update"]);

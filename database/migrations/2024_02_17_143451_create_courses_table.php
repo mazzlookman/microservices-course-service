@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->id();
             $table->string("name");
-            $table->string("certificate");
+            $table->boolean("certificate")->default(false);
             $table->string("thumbnail")->nullable();
             $table->enum("type", ["free", "premium"]);
             $table->enum("status", ["draft", "published"]);

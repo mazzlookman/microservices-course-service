@@ -10,9 +10,9 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class MentorController extends Controller
 {
-    private function findMentor(int $id): Mentor
+    public static function findMentor(int $id): Mentor
     {
-        $mentor = Mentor::find($id);
+        $mentor = Mentor::find($id,["id"]);
         if (!$mentor){
             throw new HttpResponseException(response([
                 "code" => 404,
@@ -49,7 +49,7 @@ class MentorController extends Controller
     {
         $data = $request->validated();
 
-        $mentor = $this->findMentor($id);
+        $mentor = self::findMentor($id);
         $mentor->fill($data)
             ->save();
 
@@ -68,13 +68,13 @@ class MentorController extends Controller
 
     public function getById(int $id): MentorResource
     {
-        $mentor = $this->findMentor($id);
+        $mentor = self::findMentor($id);
         return new MentorResource($mentor);
     }
 
     public function remove(int $id)
     {
-        $this->findMentor($id)->delete();
+        self::findMentor($id)->delete();
 
         return response([
             "code" => 200,
