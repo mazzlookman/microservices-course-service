@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateChapterRequest;
 use App\Http\Resources\ChapterResource;
 use App\Models\Chapter;
 use App\Models\Course;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
@@ -49,5 +50,22 @@ class ChapterController extends Controller
         $chapter->fill($req)->save();
 
         return new ChapterResource($chapter);
+    }
+
+    public function getAll(Request $request)
+    {
+        $chapter = Chapter::query();
+
+        $courseId = $request->query("course_id");
+
+        $chapter->when(isset($courseId), function (Builder $query) use ($courseId){
+            $query->where("course_id", $courseId);
+        });
+
+        return response()->json([
+            "code" => 200,
+            "status" => "OK",
+            "data" => $chapter->get()
+        ]);
     }
 }
