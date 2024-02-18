@@ -32,7 +32,7 @@ class UpdateCourseRequest extends FormRequest
             "price" => "integer",
             "level" => "string|in:all,beginner,intermediate,advanced",
             "description" => "string",
-            "mentor_id" => "required|integer"
+            "mentor_id" => "integer"
         ];
     }
 

@@ -28,8 +28,8 @@ class CourseResource extends JsonResource
                 "level" => $this->level,
                 "description" => $this->description,
                 "mentor_id" => $this->mentor_id,
-                "created_at" => date("d/m/y H:i", strtotime($this->created_at)),
-                "updated_at" => date("d/m/y H:i", strtotime($this->updated_at))
+                "created_at" => date("d/m/Y H:i", strtotime($this->created_at)),
+                "updated_at" => date("d/m/Y H:i", strtotime($this->updated_at))
             ]
         ];
     }

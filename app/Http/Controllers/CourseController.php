@@ -6,7 +6,9 @@ use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
 use App\Models\Course;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
@@ -41,11 +43,47 @@ class CourseController extends Controller
         $req = $request->validated();
 
         $course = self::findCourse($id);
-        MentorController::findMentor($req["mentor_id"]);
+        if (isset($req["mentor_id"])) MentorController::findMentor($req["mentor_id"]);
 
         $course->fill($req)
             ->save();
 
         return new CourseResource($course);
+    }
+
+    public function getAll(Request $request)
+    {
+        $courses = Course::query();
+
+        $byName = $request->query("name");
+        $byStatus = $request->query("status");
+
+        $courses->when(isset($byName), function (Builder $query) use ($byName) {
+            return $query->whereRaw("name LIKE '%".strtolower($byName)."%'");
+        });
+
+        $courses->when(isset($byStatus), function (Builder $query) use ($byStatus) {
+            return $query->where("status",$byStatus);
+        });
+
+        return response([
+            "code" => 200,
+            "status" => "OK",
+            "data" => $courses->paginate(10),
+        ]);
+
+    }
+
+    public function remove(int $id)
+    {
+        self::findCourse($id)->delete();
+
+        return response([
+            "code" => 200,
+            "status" => "OK",
+            "data" => [
+                "message" => "Course has been deleted"
+            ]
+        ]);
     }
 }

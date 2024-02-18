@@ -11,6 +11,11 @@ class Course extends Model
 
     protected $table = "courses";
 
+    protected $casts = [
+        "created_at" => "datetime:d/m/Y H:i",
+        "updated_at" => "datetime:d/m/Y H:i",
+    ];
+
     protected $guarded = ["created_at", "updated_at"];
 
     public function Mentor()
