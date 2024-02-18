@@ -19,4 +19,7 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::post("/mentors", [\App\Http\Controllers\MentorController::class, "create"]);
-Route::put("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "update"]);
+Route::get("/mentors", [\App\Http\Controllers\MentorController::class, "getAll"]);
+Route::patch("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "update"]);
+Route::get("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "getById"]);
+Route::delete("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "remove"]);

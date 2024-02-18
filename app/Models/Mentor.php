@@ -16,6 +16,10 @@ class Mentor extends Model
         "updated_at" => "datetime:Y-m-d H:m:s"
     ];
 
+    protected $hidden = [
+        "created_at", "updated_at"
+    ];
+
     protected $guarded = [
         "created_at", "updated_at"
     ];

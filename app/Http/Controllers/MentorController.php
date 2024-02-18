@@ -10,6 +10,22 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class MentorController extends Controller
 {
+    private function findMentor(int $id): Mentor
+    {
+        $mentor = Mentor::find($id);
+        if (!$mentor){
+            throw new HttpResponseException(response([
+                "code" => 404,
+                "status" => "Not Found",
+                "errors" => [
+                    "message" => "Mentor not found"
+                ]
+            ], 404));
+        }
+
+        return $mentor;
+    }
+
     public function create(CreateMentorRequest $request): MentorResource
     {
         $data = $request->validated();
@@ -33,20 +49,39 @@ class MentorController extends Controller
     {
         $data = $request->validated();
 
-        $mentor = Mentor::find($id);
-        if (!$mentor){
-            throw new HttpResponseException(response([
-                "code" => 404,
-                "status" => "Not Found",
-                "errors" => [
-                    "message" => "Mentor not found"
-                ]
-            ], 404));
-        }
-
+        $mentor = $this->findMentor($id);
         $mentor->fill($data)
             ->save();
 
         return new MentorResource($mentor);
+    }
+
+    public function getAll()
+    {
+        $mentors = Mentor::all();
+        return response([
+            "code" => 200,
+            "status" => "OK",
+            "data" => $mentors
+        ]);
+    }
+
+    public function getById(int $id): MentorResource
+    {
+        $mentor = $this->findMentor($id);
+        return new MentorResource($mentor);
+    }
+
+    public function remove(int $id)
+    {
+        $this->findMentor($id)->delete();
+
+        return response([
+            "code" => 200,
+            "status" => "OK",
+            "data" => [
+                "message" => "Mentor has been deleted"
+            ]
+        ]);
     }
 }

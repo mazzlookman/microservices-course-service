@@ -8,7 +8,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class MentorResource extends JsonResource
 {
 
-    public static $wrap = "data";
+//    public static $wrap = "mentor";
 
     /**
      * Transform the resource into an array.
