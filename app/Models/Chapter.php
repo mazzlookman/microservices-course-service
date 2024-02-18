@@ -11,6 +11,11 @@ class Chapter extends Model
 
     protected $table = "chapters";
 
+    protected $casts = [
+        "created_at" => "datetime:d/m/Y H:i",
+        "updated_at" => "datetime:d/m/Y H:i",
+    ];
+
     protected $fillable = [
         "name", "course_id"
     ];
