@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateMentorRequest;
 use App\Http\Requests\UpdateMentorRequest;
 use App\Http\Resources\MentorResource;
@@ -14,13 +15,9 @@ class MentorController extends Controller
     {
         $mentor = Mentor::find($id,["id"]);
         if (!$mentor){
-            throw new HttpResponseException(response([
-                "code" => 404,
-                "status" => "Not Found",
-                "errors" => [
-                    "message" => "Mentor not found"
-                ]
-            ], 404));
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::notFoundResponse("Mentor"),404),
+            );
         }
 
         return $mentor;
@@ -31,13 +28,9 @@ class MentorController extends Controller
         $data = $request->validated();
 
         if (Mentor::where("email", $data["email"])->count() === 1) {
-            throw new HttpResponseException(response([
-                "code" => 409,
-                "status" => "Conflict",
-                "errors" => [
-                    "message" => "Email already exists"
-                ]
-            ], 409));
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::conflictEmailResponse(),409)
+            );
         }
 
         $mentor = Mentor::create($data);
@@ -59,11 +52,7 @@ class MentorController extends Controller
     public function getAll()
     {
         $mentors = Mentor::all();
-        return response([
-            "code" => 200,
-            "status" => "OK",
-            "data" => $mentors
-        ]);
+        return response()->json(ControllerResponses::getAllModelResponse($mentors));
     }
 
     public function getById(int $id): MentorResource
@@ -76,12 +65,6 @@ class MentorController extends Controller
     {
         self::findMentor($id)->delete();
 
-        return response([
-            "code" => 200,
-            "status" => "OK",
-            "data" => [
-                "message" => "Mentor has been deleted"
-            ]
-        ]);
+        return response()->json(ControllerResponses::deletedResponse("Mentor"));
     }
 }

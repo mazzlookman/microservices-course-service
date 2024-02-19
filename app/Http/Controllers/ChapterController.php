@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateChapterRequest;
 use App\Http\Requests\UpdateChapterRequest;
 use App\Http\Resources\ChapterResource;
 use App\Models\Chapter;
-use App\Models\Course;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
@@ -17,17 +17,14 @@ class ChapterController extends Controller
     {
         $chapter = Chapter::find($id);
         if (!$chapter) {
-            throw new HttpResponseException(response([
-                "code" => 404,
-                "status" => "Not Found",
-                "errors" => [
-                    "message" => "Chapter not found"
-                ]
-            ], 404));
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::notFoundResponse("Chapter"),404)
+            );
         }
 
         return $chapter;
     }
+
     public function create(CreateChapterRequest $request)
     {
         $req = $request->validated();
@@ -59,14 +56,12 @@ class ChapterController extends Controller
         $courseId = $request->query("course_id");
 
         $chapter->when(isset($courseId), function (Builder $query) use ($courseId){
-            $query->where("course_id", $courseId);
+            $query->where("course_id", intval($courseId));
         });
 
-        return response()->json([
-            "code" => 200,
-            "status" => "OK",
-            "data" => $chapter->get()
-        ]);
+        return response()->json(
+            ControllerResponses::getAllModelResponse($chapter->get())
+        );
     }
 
     public function getById(int $id)
@@ -78,12 +73,8 @@ class ChapterController extends Controller
     {
         self::findChapter($id)->delete();
 
-        return response()->json([
-            "code" => 200,
-            "status" => "OK",
-            "data" => [
-                "message" => "Chapter has been deleted"
-            ]
-        ]);
+        return response()->json(
+            ControllerResponses::deletedResponse("Chapter")
+        );
     }
 }

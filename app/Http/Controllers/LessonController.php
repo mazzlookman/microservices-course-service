@@ -2,30 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\response\ControllerResponses;
 use App\Http\Requests\CreateLessonRequest;
 use App\Http\Requests\UpdateLessonRequest;
 use App\Http\Resources\LessonResource;
-use App\Models\Chapter;
 use App\Models\Lesson;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
 class LessonController extends Controller
 {
-    public static function findLesson(int $id)
+    public function remove(int $id)
     {
-        $lesson = Lesson::find($id);
-        if (!$lesson) {
-            throw new HttpResponseException(response([
-                "code" => 404,
-                "status" => "Not Found",
-                "errors" => [
-                    "message" => "Lesson not found"
-                ]
-            ], 404));
-        }
+        self::findLesson($id)->delete();
 
-        return $lesson;
+        return response()->json(
+            ControllerResponses::deletedResponse("Lesson")
+        );
+    }
+
+    public function getById(int $id)
+    {
+        return new LessonResource(self::findLesson($id));
+    }
+
+    public function getAll(Request $request)
+    {
+        $chapterId = $request->query("chapter_id");
+
+        $lesson = Lesson::query();
+
+        $lesson->when(isset($chapterId), function (Builder $query) use ($chapterId){
+            $query->where("chapter_id", intval($chapterId));
+        });
+
+        return response()->json(
+            ControllerResponses::getAllModelResponse($lesson->get())
+        );
     }
 
     public function create(CreateLessonRequest $request)
@@ -50,5 +64,17 @@ class LessonController extends Controller
         $lesson->fill($req)->save();
 
         return new LessonResource($lesson);
+    }
+
+    public static function findLesson(int $id)
+    {
+        $lesson = Lesson::find($id);
+        if (!$lesson) {
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::notFoundResponse("Lesson"), 404)
+            );
+        }
+
+        return $lesson;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
@@ -16,13 +17,9 @@ class CourseController extends Controller
     {
         $course = Course::find($id);
         if (!$course){
-            throw new HttpResponseException(response([
-                "code" => 404,
-                "status" => "Not Found",
-                "errors" => [
-                    "message" => "Course not found"
-                ]
-            ], 404));
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::notFoundResponse("Course"),404)
+            );
         }
 
         return $course;
@@ -66,11 +63,7 @@ class CourseController extends Controller
             return $query->where("status",$byStatus);
         });
 
-        return response([
-            "code" => 200,
-            "status" => "OK",
-            "data" => $courses->paginate(10),
-        ]);
+        return response()->json(ControllerResponses::getAllModelResponse($courses->get()));
 
     }
 
@@ -78,12 +71,6 @@ class CourseController extends Controller
     {
         self::findCourse($id)->delete();
 
-        return response([
-            "code" => 200,
-            "status" => "OK",
-            "data" => [
-                "message" => "Course has been deleted"
-            ]
-        ]);
+        return response()->json(ControllerResponses::deletedResponse("Course"));
     }
 }

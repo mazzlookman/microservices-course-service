@@ -40,4 +40,7 @@ Route::delete("/chapters/{id}", [\App\Http\Controllers\ChapterController::class,
 
 // Lesson endpoints
 Route::post("/lessons", [\App\Http\Controllers\LessonController::class, "create"]);
+Route::get("/lessons", [\App\Http\Controllers\LessonController::class, "getAll"]);
 Route::patch("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "update"]);
+Route::get("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "getById"]);
+Route::delete("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "remove"]);
