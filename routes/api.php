@@ -44,3 +44,6 @@ Route::get("/lessons", [\App\Http\Controllers\LessonController::class, "getAll"]
 Route::patch("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "update"]);
 Route::get("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "getById"]);
 Route::delete("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "remove"]);
+
+// Image course endpoints
+Route::post("/image-courses", [\App\Http\Controllers\ImageCourseController::class, "create"]);
