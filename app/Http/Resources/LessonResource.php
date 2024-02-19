@@ -17,7 +17,7 @@ class LessonResource extends JsonResource
         return [
             "code" => 200,
             "status" => "OK",
-            "date" => [
+            "data" => [
                 "id" => $this->id,
                 "name" => $this->name,
                 "content" => $this->content,

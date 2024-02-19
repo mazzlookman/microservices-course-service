@@ -40,3 +40,4 @@ Route::delete("/chapters/{id}", [\App\Http\Controllers\ChapterController::class,
 
 // Lesson endpoints
 Route::post("/lessons", [\App\Http\Controllers\LessonController::class, "create"]);
+Route::patch("/lessons/{id}", [\App\Http\Controllers\LessonController::class, "update"]);
