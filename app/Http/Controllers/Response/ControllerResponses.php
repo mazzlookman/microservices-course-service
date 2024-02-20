@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ControllerResponses
 {
-    public static function conflictEmailResponse()
+    public static function conflictResponse(string $message)
     {
         return [
             "code" => 409,
             "status" => "Conflict",
             "errors" => [
-                "message" => "Email already exists"
+                "message" => $message
             ]
         ];
     }

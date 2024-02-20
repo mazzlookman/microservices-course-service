@@ -29,7 +29,7 @@ class MentorController extends Controller
 
         if (Mentor::where("email", $data["email"])->count() === 1) {
             throw new HttpResponseException(
-                response()->json(ControllerResponses::conflictEmailResponse(),409)
+                response()->json(ControllerResponses::conflictResponse("Email already exists"),409)
             );
         }
 
