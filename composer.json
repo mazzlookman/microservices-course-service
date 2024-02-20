@@ -27,7 +27,8 @@
             "Database\\Seeders\\": "database/seeders/"
         },
         "files": [
-            "app/Helpers/GetUsers.php"
+            "app/Helpers/GetUsers.php",
+            "app/Helpers/GetDateTimeEnv.php"
         ]
     },
     "autoload-dev": {

@@ -21,8 +21,8 @@ class ChapterResource extends JsonResource
                 "id" => $this->id,
                 "name" => $this->name,
                 "course_id" => $this->course_id,
-                "created_at" => date("d/m/Y H:i", strtotime($this->created_at)),
-                "updated_at" => date("d/m/Y H:i", strtotime($this->updated_at))
+                "created_at" => date(getDateTimeEnv(), strtotime($this->created_at)),
+                "updated_at" => date(getDateTimeEnv(), strtotime($this->updated_at))
             ]
         ];
     }

@@ -12,8 +12,8 @@ class Course extends Model
     protected $table = "courses";
 
     protected $casts = [
-        "created_at" => "datetime:d/m/Y H:i",
-        "updated_at" => "datetime:d/m/Y H:i",
+        "created_at" => "datetime:Y-m-d H:i:s",
+        "updated_at" => "datetime:Y-m-d H:i:s"
     ];
 
     protected $guarded = ["created_at", "updated_at"];

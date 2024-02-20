@@ -6,10 +6,26 @@ use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateMyCourseRequest;
 use App\Http\Resources\MyCourseResource;
 use App\Models\MyCourse;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
 class MyCourseController extends Controller
 {
+    public function getAll(Request $request)
+    {
+        $userId = $request->query("user_id");
+
+        $myCourse = MyCourse::query()->with("Course");
+        $myCourse->when(isset($userId), function (Builder $query) use ($userId){
+            $query->where("user_id", $userId);
+        });
+
+        return response()->json(
+            ControllerResponses::getAllModelResponse($myCourse->get())
+        );
+
+    }
+
     public function create(CreateMyCourseRequest $request)
     {
         $req = $request->validated();

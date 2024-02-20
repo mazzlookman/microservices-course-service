@@ -51,3 +51,4 @@ Route::delete("/image-courses/{id}", [\App\Http\Controllers\ImageCourseControlle
 
 // My course endpoints
 Route::post("/my-courses", [\App\Http\Controllers\MyCourseController::class, "create"]);
+Route::get("/my-courses", [\App\Http\Controllers\MyCourseController::class, "getAll"]);
