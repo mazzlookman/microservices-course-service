@@ -6,6 +6,17 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ControllerResponses
 {
+    public static function errorFromUserServiceResponse(array $user)
+    {
+        return [
+            "code" => $user["code"],
+            "status" => $user["status"],
+            "errors" => [
+                "message" => $user["errors"]["message"]
+            ]
+        ];
+    }
+
     public static function conflictResponse(string $message)
     {
         return [

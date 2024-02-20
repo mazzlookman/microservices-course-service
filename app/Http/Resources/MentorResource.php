@@ -18,8 +18,8 @@ class MentorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "code" => 200,
-            "status" => "OK",
+            "code" => 201,
+            "status" => "Created",
             "data" => [
                 "id" => $this->id,
                 "name" => $this->name,

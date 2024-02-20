@@ -23,29 +23,27 @@ class MyCourseController extends Controller
         return response()->json(
             ControllerResponses::getAllModelResponse($myCourse->get())
         );
-
     }
 
     public function create(CreateMyCourseRequest $request)
     {
         $req = $request->validated();
 
+        // is existed a course?
         $courseId = $req["course_id"];
         CourseController::findCourse($courseId);
 
+        // is existed a user?
         $userId = $req["user_id"];
         $user = getUserById($userId);
 
         if ($user["status"] !== "OK"){
-            return response()->json([
-                "code" => $user["code"],
-                "status" => $user["status"],
-                "errors" => [
-                    "message" => $user["errors"]["message"]
-                ]
-            ], $user["code"]);
+            return response()->json(
+                ControllerResponses::errorFromUserServiceResponse($user), $user["code"]
+            );
         }
 
+        // Has the user previously purchased the same course?
         $isExistMyCourse = MyCourse::where("course_id", $courseId)
             ->where("user_id", $userId)
             ->exists();
@@ -57,6 +55,7 @@ class MyCourseController extends Controller
             ,409);
         }
 
+        // Now, create the my-course
         $myCourse = MyCourse::create($req);
 
         return new MyCourseResource($myCourse);
