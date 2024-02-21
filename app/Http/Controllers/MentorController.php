@@ -35,7 +35,7 @@ class MentorController extends Controller
 
         $mentor = Mentor::create($data);
 
-        return new MentorResource($mentor);
+        return new MentorResource($mentor, 201, "Created");
     }
 
     public function update(UpdateMentorRequest $request, int $id): MentorResource

@@ -58,6 +58,6 @@ class MyCourseController extends Controller
         // Now, create the my-course
         $myCourse = MyCourse::create($req);
 
-        return new MyCourseResource($myCourse);
+        return new MyCourseResource($myCourse,201, "Created");
     }
 }

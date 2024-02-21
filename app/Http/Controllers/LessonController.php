@@ -50,7 +50,7 @@ class LessonController extends Controller
 
         $lesson = Lesson::create($req);
 
-        return new LessonResource($lesson);
+        return new LessonResource($lesson,201, "Created");
     }
 
     public function update(UpdateLessonRequest $request, int $id)

@@ -33,7 +33,7 @@ class ChapterController extends Controller
 
         $chapter = Chapter::create($req);
 
-        return new ChapterResource($chapter);
+        return new ChapterResource($chapter,201, "Created");
     }
 
     public function update(UpdateChapterRequest $request, int $id)

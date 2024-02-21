@@ -32,7 +32,7 @@ class CourseController extends Controller
 
         $course = Course::create($req);
 
-        return new CourseResource($course);
+        return new CourseResource($course,201, "Created");
     }
 
     public function update(UpdateCourseRequest $request, int $id)

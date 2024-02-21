@@ -28,6 +28,6 @@ class ImageCourseController extends Controller
 
         $imageCourse = ImageCourse::create($req);
 
-        return new ImageCourseResource($imageCourse);
+        return new ImageCourseResource($imageCourse,201, "Created");
     }
 }

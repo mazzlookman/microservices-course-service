@@ -7,8 +7,12 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class MentorResource extends JsonResource
 {
-
-//    public static $wrap = "mentor";
+    public function __construct($resource,
+                                public int $statusCode = 200,
+                                public string $statusText = "OK")
+    {
+        parent::__construct($resource);
+    }
 
     /**
      * Transform the resource into an array.
@@ -18,8 +22,8 @@ class MentorResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "code" => 201,
-            "status" => "Created",
+            "code" => $this->statusCode,
+            "status" => $this->statusText,
             "data" => [
                 "id" => $this->id,
                 "name" => $this->name,

@@ -1,6 +1,6 @@
 <?php
 
-function getDateTimeEnv()
+function dateTimeFormat()
 {
-    return getenv("DATETIME_FORMAT");
+    return "Y-m-d H:i:s";
 }
