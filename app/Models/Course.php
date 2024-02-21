@@ -18,6 +18,11 @@ class Course extends Model
 
     protected $guarded = ["created_at", "updated_at"];
 
+    public function Reviews()
+    {
+        return $this->hasMany(Review::class,"course_id","id")->orderBy("id","desc");
+    }
+
     public function Mentor()
     {
         return $this->belongsTo(Mentor::class,"mentor_id","id");

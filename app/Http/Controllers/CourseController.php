@@ -6,7 +6,10 @@ use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CourseResource;
+use App\Models\Chapter;
 use App\Models\Course;
+use App\Models\MyCourse;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
@@ -23,6 +26,44 @@ class CourseController extends Controller
         }
 
         return $course;
+    }
+
+    public function getById(int $id)
+    {
+        $course = Course::with("Chapters.Lessons")
+            ->with("Mentor")
+            ->with("ImageCourses")
+            ->find($id);
+
+        $reviews = Review::where("course_id", $id)->get()->toArray();
+        if (count($reviews) > 0) {
+            $userIds = array_column($reviews, "user_id");
+            $users = getUserByIds($userIds);
+
+            if ($users["status"] !== "OK") {
+                $reviews = [];
+            } else {
+                foreach ($reviews as $key => $review) {
+                    $userIndex = array_search($review["user_id"], array_column($users["data"],"id"));
+                    $reviews[$key]["users"] = $users["data"][$userIndex];
+                }
+            }
+        }
+
+        $totalStudents = MyCourse::where("course_id", $id)->count();
+        $lessonsInCourse = Chapter::where("course_id", $id)->withCount("Lessons")->get()->toArray();
+        var_dump($lessonsInCourse);
+        $totalLessons = array_sum(array_column($lessonsInCourse, "lessons_count"));
+
+        $course["reviews"] = $reviews;
+        $course["total_students"] = $totalStudents;
+        $course["total_lessons"] = $totalLessons;
+
+        return response([
+            "code" => 200,
+            "status" => "OK",
+            "data" => $course,
+        ]);
     }
 
     public function create(CreateCourseRequest $request)

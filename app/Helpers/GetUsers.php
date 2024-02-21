@@ -22,7 +22,7 @@ function getUserById(int $userId)
     }
 }
 
-function GetUserByIds(array $userIds = [])
+function getUserByIds(array $userIds = [])
 {
     $url = sprintf("%s/users", env("USER_SERVICE_URL"));
 
@@ -38,8 +38,6 @@ function GetUserByIds(array $userIds = [])
         $res = Http::timeout(10)->get(
             $url, ["id" => $userIds],
         );
-
-        var_dump($res);
 
         $data = $res->json();
         $data["http_code"] = $res->status();

@@ -11,6 +11,11 @@ class Review extends Model
 
     protected $table = "reviews";
 
+    protected $casts = [
+        "created_at" => "datetime:Y-m-d H:i:s",
+        "updated_at" => "datetime:Y-m-d H:i:s"
+    ];
+
     protected $guarded = [
         "created_at", "updated_at"
     ];

@@ -11,6 +11,10 @@ class ImageCourse extends Model
 
     protected $table = "image_courses";
 
+    protected $hidden = [
+        "created_at", "updated_at",
+    ];
+
     protected $fillable = [
         "course_id", "image"
     ];

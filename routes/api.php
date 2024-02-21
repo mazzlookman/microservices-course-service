@@ -28,6 +28,7 @@ Route::delete("/mentors/{id}", [\App\Http\Controllers\MentorController::class, "
 // Course endpoints
 Route::post("/courses", [\App\Http\Controllers\CourseController::class, "create"]);
 Route::get("/courses", [\App\Http\Controllers\CourseController::class, "getAll"]);
+Route::get("/courses/{id}", [\App\Http\Controllers\CourseController::class, "getById"]);
 Route::patch("/courses/{id}", [\App\Http\Controllers\CourseController::class, "update"]);
 Route::delete("/courses/{id}", [\App\Http\Controllers\CourseController::class, "remove"]);
 

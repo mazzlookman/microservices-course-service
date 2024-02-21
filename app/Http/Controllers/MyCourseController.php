@@ -47,7 +47,6 @@ class MyCourseController extends Controller
         $isExistMyCourse = MyCourse::where("course_id", $courseId)
             ->where("user_id", $userId)
             ->exists();
-        var_dump($isExistMyCourse);
 
         if ($isExistMyCourse) {
             return response()->json(
