@@ -24,6 +24,7 @@ class UpdateReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "user_id" => "integer",
             "rating" => "integer|min:1|max:5",
             "note" => "string"
         ];

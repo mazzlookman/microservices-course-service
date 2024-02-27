@@ -2,10 +2,28 @@
 
 use Illuminate\Support\Facades\Http;
 
-function getUserById(int $userId)
+function postOrder($request): array
 {
     try {
-        $url = sprintf("%s/users/%d", env("USER_SERVICE_URL"), $userId);
+        $url = getenv("PAYMENT_ORDER_SERVICE_URL") . "/api/orders";
+        $res = Http::post($url, $request);
+
+        return $res->json();
+    } catch (Exception $exception) {
+        return [
+            "code" => 500,
+            "status" => "Internal Server Error",
+            "errors" => [
+                "message" => $exception->getMessage()
+            ]
+        ];
+    }
+}
+
+function getUserById(int $userId): array
+{
+    try {
+        $url = sprintf("%s/users/%d", getenv("USER_SERVICE_URL"), $userId);
         $res = Http::timeout(5)->get($url);
 
         // response data sesuai dengan response dari service yang dipanggil (dikasus ini: user-service)
@@ -22,9 +40,9 @@ function getUserById(int $userId)
     }
 }
 
-function getUserByIds(array $userIds = [])
+function getUserByIds(array $userIds = []): array
 {
-    $url = sprintf("%s/users", env("USER_SERVICE_URL"));
+    $url = sprintf("%s/users", getenv("USER_SERVICE_URL"));
 
     try {
         if (count($userIds) === 0) {
@@ -39,18 +57,20 @@ function getUserByIds(array $userIds = [])
             $url, ["id" => $userIds],
         );
 
-        $data = $res->json();
-        $data["http_code"] = $res->status();
+        return $res->json();
 
-        return $data;
-
-    } catch (\Throwable $throwable) {
+    } catch (Exception $exception) {
         return [
             "code" => 500,
             "status" => "Internal Server Error",
             "errors" => [
-                "message" => "Service user unavailable"
+                "message" => $exception->getMessage()
             ]
         ];
     }
+}
+
+function dateTimeFormat(): string
+{
+    return "Y-m-d H:i:s";
 }

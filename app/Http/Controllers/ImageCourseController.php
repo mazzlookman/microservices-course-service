@@ -6,14 +6,21 @@ use App\Http\Controllers\Response\ControllerResponses;
 use App\Http\Requests\CreateImageCourseRequest;
 use App\Http\Resources\ImageCourseResource;
 use App\Models\ImageCourse;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
 class ImageCourseController extends Controller
 {
     public function remove(int $id)
     {
-        CourseController::findCourse($id)->delete();
+        $imgCourse = ImageCourse::find($id, ["id"]);
+        if (!$imgCourse) {
+            throw new HttpResponseException(
+                response()->json(ControllerResponses::notFoundResponse("Lesson"), 404)
+            );
+        }
 
+        $imgCourse->delete();
         return response()->json(
             ControllerResponses::deletedResponse("Image Course")
         );

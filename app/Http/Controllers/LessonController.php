@@ -24,7 +24,7 @@ class LessonController extends Controller
 
     public function getById(int $id)
     {
-        return new LessonResource(self::findLesson($id));
+        return new LessonResource(self::findLesson($id, false));
     }
 
     public function getAll(Request $request)
@@ -57,7 +57,7 @@ class LessonController extends Controller
     {
         $req = $request->validated();
 
-        $lesson = self::findLesson($id);
+        $lesson = self::findLesson($id, false);
 
         if (isset($req["chapter_id"])) ChapterController::findChapter($req["chapter_id"]);
 
@@ -66,9 +66,15 @@ class LessonController extends Controller
         return new LessonResource($lesson);
     }
 
-    public static function findLesson(int $id)
+    public static function findLesson(int $id, bool $idOny = true)
     {
-        $lesson = Lesson::find($id);
+        new Lesson();
+        if ($idOny) {
+            $lesson = Lesson::find($id, ["id"]);
+        } else {
+            $lesson = Lesson::find($id);
+        }
+
         if (!$lesson) {
             throw new HttpResponseException(
                 response()->json(ControllerResponses::notFoundResponse("Lesson"), 404)

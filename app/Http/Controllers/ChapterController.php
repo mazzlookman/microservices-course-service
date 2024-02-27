@@ -13,9 +13,16 @@ use Illuminate\Http\Request;
 
 class ChapterController extends Controller
 {
-    public static function findChapter(int $id)
+    public static function findChapter(int $id, bool $idOnly = true)
     {
-        $chapter = Chapter::find($id);
+        new Chapter();
+
+        if ($idOnly) {
+            $chapter = Chapter::find($id, ["id"]);
+        } else {
+            $chapter = Chapter::find($id);
+        }
+
         if (!$chapter) {
             throw new HttpResponseException(
                 response()->json(ControllerResponses::notFoundResponse("Chapter"),404)
@@ -40,7 +47,7 @@ class ChapterController extends Controller
     {
         $req = $request->validated();
 
-        $chapter = self::findChapter($id);
+        $chapter = self::findChapter($id, false);
 
         if (isset($req["course_id"])) CourseController::findCourse($req["course_id"]);
 
@@ -66,7 +73,7 @@ class ChapterController extends Controller
 
     public function getById(int $id)
     {
-        return new ChapterResource(self::findChapter($id));
+        return new ChapterResource(self::findChapter($id, false));
     }
 
     public function remove(int $id)

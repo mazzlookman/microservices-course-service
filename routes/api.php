@@ -52,7 +52,8 @@ Route::delete("/image-courses/{id}", [\App\Http\Controllers\ImageCourseControlle
 
 // My course endpoints
 Route::post("/my-courses", [\App\Http\Controllers\MyCourseController::class, "create"]);
-Route::get("/my-courses", [\App\Http\Controllers\MyCourseController::class, "getAll"]);
+Route::post("/my-courses/premium", [\App\Http\Controllers\MyCourseController::class, "createPremiumAccess"]);
+Route::get("/my-courses", [\App\Http\Controllers\MyCourseController::class, "getByUserId"]);
 
 // Review endpoints
 Route::post("/reviews", [\App\Http\Controllers\ReviewController::class, "create"]);

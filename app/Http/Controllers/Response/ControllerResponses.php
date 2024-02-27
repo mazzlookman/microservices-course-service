@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Response;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ControllerResponses
 {
-    public static function errorFromUserServiceResponse(array $user)
+    public static function errorFromOtherServiceResponse(array $data)
     {
         return [
-            "code" => $user["code"],
-            "status" => $user["status"],
+            "code" => $data["code"],
+            "status" => $data["status"],
             "errors" => [
-                "message" => $user["errors"]["message"]
+                "message" => $data["errors"]["message"]
             ]
         ];
     }
@@ -39,7 +41,7 @@ class ControllerResponses
         ];
     }
 
-    public static function getAllModelResponse(Collection $collection)
+    public static function getAllModelResponse(mixed $collection)
     {
         return [
             "code" => 200,

@@ -11,7 +11,15 @@ use Illuminate\Http\Request;
 
 class MyCourseController extends Controller
 {
-    public function getAll(Request $request)
+    public function createPremiumAccess(Request $request)
+    {
+        $payload = $request->all();
+        $myCourse = MyCourse::create($payload);
+
+        return new MyCourseResource($myCourse, 201, "Created");
+    }
+
+    public function getByUserId(Request $request)
     {
         $userId = $request->query("user_id");
 
@@ -31,7 +39,7 @@ class MyCourseController extends Controller
 
         // is existed a course?
         $courseId = $req["course_id"];
-        CourseController::findCourse($courseId);
+        $course = CourseController::findCourse($courseId, false);
 
         // is existed a user?
         $userId = $req["user_id"];
@@ -39,7 +47,7 @@ class MyCourseController extends Controller
 
         if ($user["status"] !== "OK"){
             return response()->json(
-                ControllerResponses::errorFromUserServiceResponse($user), $user["code"]
+                ControllerResponses::errorFromOtherServiceResponse($user), $user["code"]
             );
         }
 
@@ -54,7 +62,28 @@ class MyCourseController extends Controller
             ,409);
         }
 
-        // Now, create the my-course
+        // if premium course
+        if ($course->type === "premium") {
+
+            $order = postOrder([
+                "user" => $user["data"],
+                "course" => $course->toArray()
+            ]);
+
+            if ($order["code"] !== 201) {
+                return response()->json(
+                    ControllerResponses::errorFromOtherServiceResponse($order), $order["code"],
+                );
+            }
+
+            return response([
+                "code" => 200,
+                "status" => "OK",
+                "data" => $order["data"]
+            ]);
+        }
+
+        // if course is free
         $myCourse = MyCourse::create($req);
 
         return new MyCourseResource($myCourse,201, "Created");

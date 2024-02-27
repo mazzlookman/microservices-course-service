@@ -12,10 +12,22 @@ use Illuminate\Http\Request;
 
 class ReviewController extends Controller
 {
-    public function remove(int $id)
+    public function remove(UpdateReviewRequest $request, int $id)
     {
-        self::findReview($id)->delete();
+        $req = $request->safe()->only("user_id");
+        $review = self::findReview($id, false);
 
+        if ($review["user_id"] !== intval($req["user_id"])){
+            return response()->json([
+                "code" => 405,
+                "status" => "Method Not Allowed",
+                "errors" => [
+                    "message" => "You're not the user who created this review"
+                ]
+            ], 405);
+        }
+
+        $review->delete();
         return response()->json(
             ControllerResponses::deletedResponse("Review"),
         );
@@ -23,10 +35,19 @@ class ReviewController extends Controller
 
     public function update(UpdateReviewRequest $request, int $id)
     {
-        $request->except(["user_id", "course_id"]);
+//        $request->except(["user_id", "course_id"]);
         $req = $request->validated();
 
-        $review = self::findReview($id);
+        $review = self::findReview($id, false);
+        if ($review["user_id"] !== intval($req["user_id"])){
+            return response()->json([
+                "code" => 405,
+                "status" => "Method Not Allowed",
+                "errors" => [
+                    "message" => "You're not the user who created this review"
+                ]
+            ], 405);
+        }
 
         $review->fill($req)->save();
 
@@ -46,7 +67,7 @@ class ReviewController extends Controller
         $user = getUserById($userId);
         if ($user["status"] !== "OK") {
             return response()->json(
-                ControllerResponses::errorFromUserServiceResponse($user), $user["code"]
+                ControllerResponses::errorFromOtherServiceResponse($user), $user["code"]
             );
         }
 
@@ -67,9 +88,16 @@ class ReviewController extends Controller
         return new ReviewResource($review, 201, "Created");
     }
 
-    private static function findReview(int $id)
+    private static function findReview(int $id, bool $idOnly = true)
     {
-        $review = Review::find($id);
+        new Review();
+
+        if ($idOnly) {
+            $review = Review::find($id, ["id"]);
+        } else {
+            $review = Review::find($id);
+        }
+
         if (!$review){
             throw new HttpResponseException(
                 response()->json(ControllerResponses::notFoundResponse("Review"),404)

@@ -16,9 +16,16 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public static function findCourse(int $id)
+    public static function findCourse(int $id, bool $idOnly = true)
     {
-        $course = Course::find($id);
+        new Course();
+
+        if ($idOnly) {
+            $course = Course::find($id, ["id"]);
+        } else {
+            $course = Course::find($id);
+        }
+
         if (!$course){
             throw new HttpResponseException(
                 response()->json(ControllerResponses::notFoundResponse("Course"),404)
@@ -44,16 +51,21 @@ class CourseController extends Controller
                 $reviews = [];
             } else {
                 foreach ($reviews as $key => $review) {
+                    // combine user_id yang ada di review dan user-service
+                    // array_search($value_yang_ingin_dicari_dari_array, $ini_array_nya)
+                    // hasilnya: index dari masing2 data users yang telah melakukan review terhadap course id ini
                     $userIndex = array_search($review["user_id"], array_column($users["data"],"id"));
+
+                    // inject data user yang melakukan review ke masing2 data review-nya
                     $reviews[$key]["users"] = $users["data"][$userIndex];
                 }
             }
         }
 
         $totalStudents = MyCourse::where("course_id", $id)->count();
-        $lessonsInCourse = Chapter::where("course_id", $id)->withCount("Lessons")->get()->toArray();
-        var_dump($lessonsInCourse);
-        $totalLessons = array_sum(array_column($lessonsInCourse, "lessons_count"));
+
+        $lessonsInChapterIsCourse = Chapter::where("course_id", $id)->withCount("Lessons")->get()->toArray();
+        $totalLessons = array_sum(array_column($lessonsInChapterIsCourse, "lessons_count"));
 
         $course["reviews"] = $reviews;
         $course["total_students"] = $totalStudents;
@@ -80,7 +92,7 @@ class CourseController extends Controller
     {
         $req = $request->validated();
 
-        $course = self::findCourse($id);
+        $course = self::findCourse($id, false);
         if (isset($req["mentor_id"])) MentorController::findMentor($req["mentor_id"]);
 
         $course->fill($req)
@@ -101,10 +113,10 @@ class CourseController extends Controller
         });
 
         $courses->when(isset($byStatus), function (Builder $query) use ($byStatus) {
-            return $query->where("status",$byStatus);
+            return $query->where("status", $byStatus);
         });
 
-        return response()->json(ControllerResponses::getAllModelResponse($courses->get()));
+        return response()->json(ControllerResponses::getAllModelResponse($courses->paginate(10)));
 
     }
 

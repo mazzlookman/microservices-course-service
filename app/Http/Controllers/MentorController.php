@@ -11,9 +11,16 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 
 class MentorController extends Controller
 {
-    public static function findMentor(int $id): Mentor
+    public static function findMentor(int $id, bool $idOnly = true): Mentor
     {
-        $mentor = Mentor::find($id,["id"]);
+        new Mentor();
+
+        if ($idOnly) {
+            $mentor = Mentor::find($id, ["id"]);
+        } else {
+            $mentor = Mentor::find($id);
+        }
+
         if (!$mentor){
             throw new HttpResponseException(
                 response()->json(ControllerResponses::notFoundResponse("Mentor"),404),
@@ -42,7 +49,7 @@ class MentorController extends Controller
     {
         $data = $request->validated();
 
-        $mentor = self::findMentor($id);
+        $mentor = self::findMentor($id, false);
         $mentor->fill($data)
             ->save();
 
@@ -57,7 +64,7 @@ class MentorController extends Controller
 
     public function getById(int $id): MentorResource
     {
-        $mentor = self::findMentor($id);
+        $mentor = self::findMentor($id, false);
         return new MentorResource($mentor);
     }
 
