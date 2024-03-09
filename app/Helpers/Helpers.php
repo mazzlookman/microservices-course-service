@@ -23,7 +23,7 @@ function postOrder($request): array
 function getUserById(int $userId): array
 {
     try {
-        $url = sprintf("%s/users/%d", getenv("USER_SERVICE_URL"), $userId);
+        $url = sprintf("%s/api/users/%d", getenv("USER_SERVICE_URL"), $userId);
         $res = Http::timeout(5)->get($url);
 
         // response data sesuai dengan response dari service yang dipanggil (dikasus ini: user-service)
@@ -42,7 +42,7 @@ function getUserById(int $userId): array
 
 function getUserByIds(array $userIds = []): array
 {
-    $url = sprintf("%s/users", getenv("USER_SERVICE_URL"));
+    $url = sprintf("%s/api/users", getenv("USER_SERVICE_URL"));
 
     try {
         if (count($userIds) === 0) {

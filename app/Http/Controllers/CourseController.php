@@ -11,6 +11,7 @@ use App\Models\Course;
 use App\Models\MyCourse;
 use App\Models\Review;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
@@ -103,21 +104,24 @@ class CourseController extends Controller
 
     public function getAll(Request $request)
     {
-        $courses = Course::query();
+        try {
+            $courses = Course::query();
 
-        $byName = $request->query("name");
-        $byStatus = $request->query("status");
+            $byName = $request->query("name");
+            $byStatus = $request->query("status");
 
-        $courses->when(isset($byName), function (Builder $query) use ($byName) {
-            return $query->whereRaw("name LIKE '%".strtolower($byName)."%'");
-        });
+            $courses->when(isset($byName), function (Builder $query) use ($byName) {
+                return $query->whereRaw("name LIKE '%".strtolower($byName)."%'");
+            });
 
-        $courses->when(isset($byStatus), function (Builder $query) use ($byStatus) {
-            return $query->where("status", $byStatus);
-        });
+            $courses->when(isset($byStatus), function (Builder $query) use ($byStatus) {
+                return $query->where("status", $byStatus);
+            });
 
-        return response()->json(ControllerResponses::getAllModelResponse($courses->paginate(10)));
-
+            return response()->json(ControllerResponses::getAllModelResponse($courses->paginate(10)));
+        } catch (\Exception $e) {
+            return response(ControllerResponses::internalServerError($e->getMessage()), 500);
+        }
     }
 
     public function remove(int $id)

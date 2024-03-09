@@ -8,6 +8,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class ControllerResponses
 {
+    public static function internalServerError(string $message)
+    {
+        return [
+            "code" => 500,
+            "status" => "Internal Server Error",
+            "errors" => [
+                "message" => $message
+            ]
+        ];
+    }
     public static function errorFromOtherServiceResponse(array $data)
     {
         return [
